@@ -77,15 +77,16 @@ URL + 目标说明
 - **产品壳（本地 Web）** — `npm run app` → 贴 URL → 预览/改步骤 → 出片下载（无时间线）
 - **Agent 生成脚本** — `npm run agent -- <url> --goal "..."`；有 `OPENAI_API_KEY` / `OPENROUTER_API_KEY` 走 LLM，否则启发式兜底
 - **YAML 分步脚本** — `goto` / `click` / `type` / `scroll` / `upload` / `wait` / `hover` / `press` / `assert`
-- **页面巡游录制** — Playwright `recordVideo`，1280×720，优先本机 Google Chrome
+- **页面巡游录制** — Playwright `recordVideo`，优先本机 Google Chrome
+- **多画幅** — `16:9`（1280×720）/ `9:16`（720×1280）/ `1:1`（1080×1080）；录制 viewport 与成片一致
+- **旁白 TTS** — 主路径 **OpenAI Audio Speech（`tts-1`）**；无 Key 时 macOS 回退 **`say`（默认音色 Tingting）** → `voiceover.m4a`，Remotion 混入成片
 - **Scout 扫页草稿** — 无 LLM 的启发式生成（轻量）
-- **Remotion 抛光** — 标题卡、轻推进、点击高亮、步骤字幕、品牌强调色 → H.264 MP4
-- **一条龙 CLI** — `npm run demo`：脚本或 URL+goal → 录制 → 抛光
+- **Remotion 抛光** — 标题卡、轻推进、点击高亮、步骤字幕、品牌色、旁白 → H.264 MP4
+- **一条龙 CLI** — `npm run demo`：脚本或 URL+goal → 录制 → TTS → 抛光
 
 ### 规划中
 
-- 旁白 TTS / 多语言片头
-- 多画幅（9:16 / 1:1）
+- 多语言片头模板 / 更多 TTS 音色与语速控制
 - 登录态、失败重试、CI 批量出片
 - 云端部署与队列
 
@@ -227,6 +228,9 @@ name: my-demo
 url: https://example.com
 title: 产品一句话标题
 subtitle: 副标题 / 目标句
+aspectRatio: "16:9"   # 或 9:16 / 1:1
+voiceover: true       # 旁白 TTS
+# narration: "可选：完整旁白文案；默认用 title + subtitle + captions"
 brandColor: "#2f6fed"
 captions:
   - atStep: 0
@@ -241,6 +245,17 @@ steps:
   - action: click
     selector: "text=立即开始"
 ```
+
+### 旁白 TTS 说明
+
+| 优先级 | 引擎 | 条件 |
+|---|---|---|
+| 1 | **OpenAI `tts-1`** | `OPENAI_API_KEY`（或兼容网关） |
+| 2 | **macOS `say`** | 无 Key 且运行在 macOS；默认中文音色 `Tingting` |
+
+环境变量见 [`workflow/.env.example`](workflow/.env.example)：`TRACEVIDS_TTS_VOICE`（如 `nova`）、`TRACEVIDS_SAY_VOICE`。
+
+旁白文案默认拼接 `title` + `subtitle` + `captions`；也可用 `narration` 覆盖全文。
 
 ### 支持的 action
 
@@ -308,6 +323,12 @@ A: 在 YAML 里加 `captions`（`atStep` + `text`），或让 Agent 生成（启
 **Q: 如何改品牌色？**  
 A: YAML 顶层 `brandColor: "#RRGGBB"`，影响标题装饰条、点击环、字幕底边。
 
+**Q: 用的哪家 TTS？**  
+A: 有 OpenAI Key 时用 **OpenAI `tts-1`**；否则在 macOS 上用系统 **`say`**（默认 `Tingting`）。成片混入 `voiceover.mp3` / `.m4a`。
+
+**Q: 怎么出竖屏 / 方形？**  
+A: 设 `aspectRatio: "9:16"` 或 `"1:1"`（产品壳里也可选）。录制与抛光画幅一致。
+
 **Q: 登录后的页面？**  
 A: MVP 未内置登录态；公开页或可匿名演示的路径最稳。登录态在路线图中。
 
@@ -323,8 +344,9 @@ A: 见 [remotion.dev/docs/license](https://www.remotion.dev/docs/license)；公�
 | Done | LLM / 启发式生成 YAML |
 | Done | 抛光：字幕 + 品牌色 |
 | Done | 产品壳（贴 URL → 预览步骤 → 下载） |
-| Next | 旁白 TTS、多画幅 |
-| Later | 登录态、重试、CI 批量 / 上云 |
+| Done | 旁白 TTS（OpenAI + macOS say）、多画幅 |
+| Next | 登录态、重试、CI 批量 / 上云 |
+| Later | 更多 TTS 引擎与片头模板 |
 
 ---
 

@@ -60,8 +60,22 @@
 					<input id="brandColor" type="text" placeholder="#ff6b3d" />
 				</label>
 				<label class="field">
+					<span>画幅</span>
+					<select id="aspectRatio">
+						<option value="16:9">横屏 16:9</option>
+						<option value="9:16">竖屏 9:16</option>
+						<option value="1:1">方形 1:1</option>
+					</select>
+				</label>
+				<label class="field check">
+					<span class="check-row">
+						<input id="voiceover" type="checkbox" checked />
+						旁白 TTS（OpenAI；无 Key 时 macOS say）
+					</span>
+				</label>
+				<label class="field">
 					<span>步骤（JSON）</span>
-					<textarea id="steps-json" rows="14" spellcheck="false"></textarea>
+					<textarea id="steps-json" rows="12" spellcheck="false"></textarea>
 				</label>
 				<div class="actions">
 					<button type="button" class="primary" id="btn-produce">生成视频</button>

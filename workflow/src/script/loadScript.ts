@@ -55,12 +55,20 @@ export function parseDemoScript(raw: unknown, baseDir: string): DemoScript {
 				.map((c) => ({ atStep: c.atStep, text: c.text }))
 		: undefined;
 
+	const aspectRatio =
+		doc.aspectRatio === "9:16" || doc.aspectRatio === "1:1" || doc.aspectRatio === "16:9"
+			? doc.aspectRatio
+			: undefined;
+
 	return {
 		name: typeof doc.name === "string" ? doc.name : undefined,
 		url: doc.url,
 		title: typeof doc.title === "string" ? doc.title : undefined,
 		subtitle: typeof doc.subtitle === "string" ? doc.subtitle : undefined,
 		locale: typeof doc.locale === "string" ? doc.locale : undefined,
+		aspectRatio,
+		voiceover: typeof doc.voiceover === "boolean" ? doc.voiceover : undefined,
+		narration: typeof doc.narration === "string" ? doc.narration : undefined,
 		brandColor: typeof doc.brandColor === "string" ? doc.brandColor : undefined,
 		captions,
 		viewport:

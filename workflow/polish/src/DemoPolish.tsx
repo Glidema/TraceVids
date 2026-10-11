@@ -1,6 +1,7 @@
 import React from "react";
 import {
 	AbsoluteFill,
+	Audio,
 	Easing,
 	OffthreadVideo,
 	Sequence,
@@ -20,7 +21,6 @@ export type PolishEvent = {
 };
 
 export type PolishCaption = {
-	/** Absolute ms on the source timeline (resolved from atStep + events). */
 	tMs: number;
 	text: string;
 	durationMs?: number;
@@ -33,8 +33,9 @@ export type DemoPolishProps = {
 	brandColor: string;
 	events: PolishEvent[];
 	captions: PolishCaption[];
-	/** Source video duration in frames at composition fps. */
 	sourceFrames: number;
+	/** Optional narration file in public/ (mp3/m4a). */
+	voiceoverFile: string | null;
 };
 
 export const TITLE_FRAMES = 45;
@@ -57,10 +58,14 @@ export const DemoPolish: React.FC<DemoPolishProps> = ({
 	events,
 	captions,
 	sourceFrames,
+	voiceoverFile,
 }) => {
 	const frame = useCurrentFrame();
 	const { fps, width, height } = useVideoConfig();
 	const accent = brandColor || "#ff6b3d";
+	const titleSize = Math.round(Math.min(width, height) * 0.055);
+	const subSize = Math.round(Math.min(width, height) * 0.028);
+	const captionSize = Math.round(Math.min(width, height) * 0.032);
 
 	const zoom = interpolate(
 		frame,
@@ -100,12 +105,18 @@ export const DemoPolish: React.FC<DemoPolishProps> = ({
 
 	return (
 		<AbsoluteFill style={{ backgroundColor: "#0b1020" }}>
+			{voiceoverFile ? (
+				<Sequence from={TITLE_FRAMES}>
+					<Audio src={staticFile(voiceoverFile)} volume={0.95} />
+				</Sequence>
+			) : null}
+
 			<AbsoluteFill
 				style={{
 					opacity: titleOpacity,
 					justifyContent: "center",
 					alignItems: "center",
-					padding: 64,
+					padding: Math.round(width * 0.06),
 					transform: `translateY(${titleY}px)`,
 				}}
 			>
@@ -121,11 +132,11 @@ export const DemoPolish: React.FC<DemoPolishProps> = ({
 				<div
 					style={{
 						fontFamily: "Georgia, 'Songti SC', serif",
-						fontSize: 56,
+						fontSize: titleSize,
 						color: "#f4f1ea",
 						textAlign: "center",
 						lineHeight: 1.2,
-						maxWidth: 1000,
+						maxWidth: width * 0.82,
 					}}
 				>
 					{title}
@@ -135,9 +146,11 @@ export const DemoPolish: React.FC<DemoPolishProps> = ({
 						style={{
 							marginTop: 18,
 							fontFamily: "Helvetica Neue, sans-serif",
-							fontSize: 24,
+							fontSize: subSize,
 							color: "#9aa4b8",
 							letterSpacing: 0.5,
+							textAlign: "center",
+							maxWidth: width * 0.78,
 						}}
 					>
 						{subtitle}
@@ -158,6 +171,7 @@ export const DemoPolish: React.FC<DemoPolishProps> = ({
 						<OffthreadVideo
 							src={staticFile(videoFile)}
 							style={{ width: "100%", height: "100%", objectFit: "cover" }}
+							volume={0.15}
 						/>
 					</div>
 
@@ -198,22 +212,23 @@ export const DemoPolish: React.FC<DemoPolishProps> = ({
 								position: "absolute",
 								left: 0,
 								right: 0,
-								bottom: 48,
+								bottom: Math.round(height * 0.06),
 								display: "flex",
 								justifyContent: "center",
 								pointerEvents: "none",
+								padding: "0 24px",
 							}}
 						>
 							<div
 								style={{
-									maxWidth: 900,
+									maxWidth: width * 0.86,
 									padding: "12px 22px",
 									borderRadius: 12,
 									backgroundColor: "rgba(11,16,32,0.72)",
 									borderBottom: `3px solid ${accent}`,
 									color: "#f4f1ea",
 									fontFamily: "Helvetica Neue, 'PingFang SC', sans-serif",
-									fontSize: 28,
+									fontSize: captionSize,
 									lineHeight: 1.35,
 									textAlign: "center",
 								}}

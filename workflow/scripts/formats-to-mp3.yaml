@@ -3,6 +3,8 @@ url: https://transcribe.com/zh/formats-to-mp3
 title: 免費將檔案轉為 MP3
 subtitle: Transcribe 線上轉檔
 locale: zh-TW
+aspectRatio: "16:9"
+voiceover: true
 brandColor: "#2f6fed"
 viewport:
   width: 1280

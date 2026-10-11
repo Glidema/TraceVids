@@ -1,20 +1,22 @@
 import { spawn } from "node:child_process";
-import { mkdir, rename, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { stringify as toYaml } from "yaml";
+import { viewportForAspect } from "./script/aspect.js";
 import { generateDemoScript } from "./script/generateScript.js";
 import { loadDemoScript } from "./script/loadScript.js";
 import { collectPageContext } from "./script/pageContext.js";
 import { runDemoScript } from "./script/runScript.js";
 import type { GeneratedDemoScript } from "./script/schema.js";
 import type { DemoScript } from "./script/types.js";
+import { synthesizeNarration } from "./tts.js";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 export const WORKFLOW_ROOT = path.resolve(HERE, "..");
 
-export type JobPhase = "queued" | "recording" | "polishing" | "done" | "error";
+export type JobPhase = "queued" | "recording" | "narrating" | "polishing" | "done" | "error";
 
 export interface JobState {
 	id: string;
@@ -52,7 +54,9 @@ export async function recordFromScript(
 	const videoDir = path.join(outDir, ".pw-video");
 	await mkdir(videoDir, { recursive: true });
 
-	const viewport = script.viewport ?? { width: 1280, height: 720 };
+	const preset = viewportForAspect(script.aspectRatio);
+	const viewport = { width: preset.width, height: preset.height };
+
 	let browser;
 	try {
 		browser = await chromium.launch({ headless: true, channel: "chrome" });
@@ -89,9 +93,14 @@ export async function recordFromScript(
 		title: script.title ?? new URL(script.url).hostname,
 		subtitle: script.subtitle ?? "",
 		brandColor: script.brandColor ?? "#ff6b3d",
+		aspectRatio: script.aspectRatio ?? "16:9",
+		voiceover: script.voiceover !== false,
+		narration: script.narration ?? "",
 		captions: script.captions ?? [],
 		viewport,
 		video: "demo.webm",
+		voiceoverFile: null as string | null,
+		ttsMode: "none" as string,
 		recordedAt: new Date().toISOString(),
 		events,
 	};
@@ -111,12 +120,14 @@ export async function saveScriptYaml(script: GeneratedDemoScript | DemoScript, f
 }
 
 function absolutizeUploads(script: DemoScript): DemoScript {
+	const preset = viewportForAspect(script.aspectRatio);
 	return {
 		...script,
+		aspectRatio: script.aspectRatio ?? "16:9",
+		viewport: { width: preset.width, height: preset.height },
 		steps: script.steps.map((step) => {
 			if (step.action !== "upload") return step;
 			if (path.isAbsolute(step.path)) return step;
-			// Common agent/scout relative path → workflow/fixtures
 			const baseName = path.basename(step.path);
 			const fixturePath = path.join(WORKFLOW_ROOT, "fixtures", baseName);
 			return { ...step, path: fixturePath };
@@ -134,7 +145,23 @@ export async function produceFromScript(
 	await saveScriptYaml(normalized, scriptPath);
 	onPhase?.("recording", "正在录制浏览器演示…");
 	const loaded = await loadDemoScript(scriptPath);
-	await recordFromScript(loaded, outDir);
+	const { metaPath } = await recordFromScript(loaded, outDir);
+
+	onPhase?.("narrating", "正在生成旁白 TTS…");
+	const meta = JSON.parse(await readFile(metaPath, "utf8")) as Record<string, unknown>;
+	const tts = await synthesizeNarration({
+		outDir,
+		enabled: loaded.voiceover !== false,
+		title: loaded.title,
+		subtitle: loaded.subtitle,
+		captions: loaded.captions,
+		narration: loaded.narration,
+	});
+	meta.voiceoverFile = tts.audioPath ? path.basename(tts.audioPath) : null;
+	meta.ttsMode = tts.mode;
+	meta.narrationText = tts.text;
+	await writeFile(metaPath, JSON.stringify(meta, null, 2));
+
 	onPhase?.("polishing", "正在 Remotion 抛光…");
 	const videoPath = await polishJob(outDir);
 	onPhase?.("done", "成片已就绪");

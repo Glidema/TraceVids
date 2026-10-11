@@ -6,6 +6,8 @@ const els = {
 	title: $("title"),
 	subtitle: $("subtitle"),
 	brandColor: $("brandColor"),
+	aspectRatio: $("aspectRatio"),
+	voiceover: $("voiceover"),
 	stepsJson: $("steps-json"),
 	genStatus: $("gen-status"),
 	produceStatus: $("produce-status"),
@@ -40,6 +42,8 @@ function fillEditor(script) {
 	els.title.value = script.title || "";
 	els.subtitle.value = script.subtitle || "";
 	els.brandColor.value = script.brandColor || "#ff6b3d";
+	els.aspectRatio.value = script.aspectRatio || "16:9";
+	els.voiceover.checked = script.voiceover !== false;
 	els.stepsJson.value = JSON.stringify(script.steps, null, 2);
 }
 
@@ -56,6 +60,8 @@ function readEditorScript() {
 		title: els.title.value.trim() || currentScript.title,
 		subtitle: els.subtitle.value.trim(),
 		brandColor: els.brandColor.value.trim() || "#ff6b3d",
+		aspectRatio: els.aspectRatio.value || "16:9",
+		voiceover: Boolean(els.voiceover.checked),
 		steps,
 	};
 }

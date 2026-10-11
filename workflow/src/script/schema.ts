@@ -56,6 +56,11 @@ export const demoScriptSchema = z.object({
 	title: z.string().min(1).max(80),
 	subtitle: z.string().max(120).optional().default(""),
 	locale: z.string().optional(),
+	aspectRatio: z.enum(["16:9", "9:16", "1:1"]).optional().default("16:9"),
+	/** Generate spoken narration in polish (OpenAI TTS or macOS say). */
+	voiceover: z.boolean().optional().default(true),
+	/** Optional full narration script; defaults to title + subtitle + captions. */
+	narration: z.string().max(1200).optional().default(""),
 	brandColor: z
 		.string()
 		.regex(/^#[0-9a-fA-F]{6}$/)

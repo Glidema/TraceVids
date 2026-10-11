@@ -103,6 +103,8 @@ export function generateScriptHeuristic(opts: GenerateOptions): GeneratedDemoScr
 		title,
 		subtitle: goal.slice(0, 80),
 		locale: /[\u4e00-\u9fff]/.test(goal + context.bodyTextSample) ? "zh-CN" : "en-US",
+		aspectRatio: "16:9",
+		voiceover: true,
 		brandColor: "#ff6b3d",
 		captions,
 		viewport: { width: 1280, height: 720 },
@@ -131,7 +133,9 @@ Rules:
 - After every click/upload/scroll, insert wait (700–1800ms) so the camera can breathe.
 - First step should be goto (waitUntil domcontentloaded or networkidle).
 - If the page has a file input and the goal involves convert/upload, include an upload step with path "${fixture}".
-- captions: 3–8 short Chinese or English lines tied to step indexes (atStep), for on-video subtitles.
+- captions: 3–8 short Chinese or English lines tied to step indexes (atStep), for on-video subtitles and TTS narration.
+- aspectRatio: default "16:9"; use "9:16" for short-video / "1:1" for feed square when the goal implies it.
+- voiceover: true unless the user asks for silent video.
 - brandColor: a hex accent that fits the page (default #ff6b3d).
 - title/subtitle: marketing-ready, match the user goal.
 - Do not invent URLs outside the given site.

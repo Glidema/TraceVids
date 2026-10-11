@@ -21,6 +21,12 @@ export interface DemoScript {
 	url: string;
 	viewport?: { width: number; height: number };
 	locale?: string;
+	/** Output / recording aspect. */
+	aspectRatio?: "16:9" | "9:16" | "1:1";
+	/** Generate spoken narration during polish. */
+	voiceover?: boolean;
+	/** Full narration script; otherwise title + subtitle + captions. */
+	narration?: string;
 	/** Shown as Remotion title card. */
 	title?: string;
 	subtitle?: string;
