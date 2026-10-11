@@ -1,0 +1,25 @@
+{
+  "name": "@tracevids/demo-workflow",
+  "version": "0.1.0",
+  "private": true,
+  "description": "URL → YAML steps → browser video → Remotion polish",
+  "type": "module",
+  "scripts": {
+    "record": "tsx src/recordUrl.ts",
+    "scout": "tsx src/scout.ts",
+    "polish": "npm run render --prefix polish --",
+    "demo": "tsx src/demo.ts"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "playwright": "^1.51.0",
+    "yaml": "^2.7.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
+  }
+}
