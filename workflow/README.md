@@ -1,17 +1,17 @@
 # workflow
 
-TraceVids 的可运行 MVP（CLI）。
-
-完整产品说明、教程、场景与 FAQ 见仓库根目录：
-
-→ **[../README.md](../README.md)**
-
-## 快捷命令
+TraceVids 可运行 CLI + 本地产品壳。完整说明见 **[../README.md](../README.md)**。
 
 ```bash
 npm install && npx playwright install ffmpeg
 cd polish && npm install && cd ..
+cp .env.example .env   # 可选 API Key
 
-npm run scout -- https://example.com -o scripts/example.yaml
+# 产品壳（推荐）
+npm run app
+# → http://127.0.0.1:8787
+
+# CLI
+npm run agent -- https://example.com --goal "演示核心功能" -o scripts/out.yaml
 npm run demo -- --script scripts/formats-to-mp3.yaml --out ./output/transcribe-mp3
 ```

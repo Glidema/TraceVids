@@ -1,0 +1,245 @@
+:root {
+	--bg0: #12151c;
+	--bg1: #1a2030;
+	--ink: #f3efe6;
+	--muted: #9aa3b5;
+	--line: rgba(243, 239, 230, 0.12);
+	--accent: #ff6b3d;
+	--accent-2: #5ec8ff;
+	--ok: #7ddea5;
+	--danger: #ff8e8e;
+	--radius: 18px;
+	--font-display: "Fraunces", Georgia, "Songti SC", serif;
+	--font-body: "Manrope", "PingFang SC", "Noto Sans SC", sans-serif;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	margin: 0;
+	min-height: 100%;
+	color: var(--ink);
+	font-family: var(--font-body);
+	background: var(--bg0);
+}
+
+.atmosphere {
+	position: fixed;
+	inset: 0;
+	z-index: 0;
+	background:
+		radial-gradient(900px 520px at 12% -10%, rgba(255, 107, 61, 0.28), transparent 55%),
+		radial-gradient(700px 480px at 90% 8%, rgba(94, 200, 255, 0.18), transparent 50%),
+		linear-gradient(160deg, #10131a 0%, #171c28 48%, #0e1219 100%);
+	pointer-events: none;
+}
+
+.shell {
+	position: relative;
+	z-index: 1;
+	width: min(720px, calc(100% - 2rem));
+	margin: 0 auto;
+	padding: 12vh 0 4rem;
+}
+
+.brand-block {
+	margin-bottom: 2.25rem;
+}
+
+.brand {
+	margin: 0 0 1rem;
+	font-family: var(--font-display);
+	font-size: clamp(2.6rem, 8vw, 4.2rem);
+	font-weight: 700;
+	letter-spacing: -0.04em;
+	line-height: 0.95;
+}
+
+.brand-block h1 {
+	margin: 0 0 0.75rem;
+	font-family: var(--font-display);
+	font-size: clamp(1.35rem, 3.4vw, 1.85rem);
+	font-weight: 500;
+	line-height: 1.25;
+	max-width: 18ch;
+}
+
+.lede {
+	margin: 0;
+	color: var(--muted);
+	font-size: 1.02rem;
+	line-height: 1.55;
+	max-width: 36ch;
+}
+
+.panel {
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	padding: 1.25rem;
+	background: rgba(18, 22, 32, 0.72);
+	backdrop-filter: blur(10px);
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+}
+
+.panel.hidden {
+	display: none;
+}
+
+.panel-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-bottom: 0.35rem;
+}
+
+.panel-head h2 {
+	margin: 0;
+	font-family: var(--font-display);
+	font-size: 1.35rem;
+	font-weight: 500;
+}
+
+.panel-note {
+	margin: 0 0 1rem;
+	color: var(--muted);
+	font-size: 0.92rem;
+}
+
+.badge {
+	font-size: 0.75rem;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--bg0);
+	background: var(--accent-2);
+	border-radius: 999px;
+	padding: 0.28rem 0.65rem;
+	font-weight: 700;
+}
+
+.field {
+	display: grid;
+	gap: 0.4rem;
+	margin-bottom: 0.9rem;
+}
+
+.field span {
+	font-size: 0.82rem;
+	color: var(--muted);
+	font-weight: 600;
+}
+
+input,
+textarea {
+	width: 100%;
+	border: 1px solid var(--line);
+	border-radius: 12px;
+	background: rgba(8, 10, 14, 0.55);
+	color: var(--ink);
+	font: inherit;
+	padding: 0.85rem 0.95rem;
+	outline: none;
+}
+
+textarea {
+	resize: vertical;
+	min-height: 220px;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	font-size: 0.86rem;
+	line-height: 1.45;
+}
+
+input:focus,
+textarea:focus {
+	border-color: rgba(255, 107, 61, 0.7);
+	box-shadow: 0 0 0 3px rgba(255, 107, 61, 0.15);
+}
+
+.actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.75rem;
+	margin-top: 0.35rem;
+}
+
+button,
+.link-btn {
+	appearance: none;
+	border: 0;
+	border-radius: 999px;
+	font: inherit;
+	font-weight: 700;
+	cursor: pointer;
+	padding: 0.85rem 1.25rem;
+	text-decoration: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+button:disabled {
+	opacity: 0.55;
+	cursor: wait;
+}
+
+.primary {
+	background: var(--accent);
+	color: #1a0d08;
+}
+
+.primary:hover {
+	filter: brightness(1.05);
+}
+
+.ghost {
+	background: transparent;
+	color: var(--ink);
+	border: 1px solid var(--line);
+}
+
+.hint {
+	margin: 0;
+	min-height: 1.25rem;
+	color: var(--muted);
+	font-size: 0.9rem;
+}
+
+.hint.error {
+	color: var(--danger);
+}
+
+.hint.ok {
+	color: var(--ok);
+}
+
+#preview {
+	width: 100%;
+	border-radius: 14px;
+	background: #000;
+	margin: 0.5rem 0 1rem;
+	aspect-ratio: 16 / 9;
+}
+
+@media (max-width: 640px) {
+	.shell {
+		padding-top: 8vh;
+	}
+
+	.brand-block h1 {
+		max-width: none;
+	}
+
+	.actions {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	button,
+	.link-btn {
+		width: 100%;
+	}
+}

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>TraceVids — 网址变演示视频</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+		<link rel="stylesheet" href="/styles.css" />
+	</head>
+	<body>
+		<div class="atmosphere" aria-hidden="true"></div>
+		<main class="shell">
+			<header class="brand-block">
+				<p class="brand">TraceVids</p>
+				<h1>把网址变成可发布的产品演示</h1>
+				<p class="lede">贴链接、写一句目标，审一下步骤，直接出片。没有时间线，没有剪辑软件。</p>
+			</header>
+
+			<section class="panel" id="input-panel">
+				<label class="field">
+					<span>网址</span>
+					<input id="url" type="url" placeholder="https://your-product.com/feature" autocomplete="url" />
+				</label>
+				<label class="field">
+					<span>目标（一句话）</span>
+					<input
+						id="goal"
+						type="text"
+						placeholder="例如：演示如何把音频转成 MP3"
+						value="用短视频演示这个页面的核心功能，突出主 CTA"
+					/>
+				</label>
+				<div class="actions">
+					<button type="button" class="primary" id="btn-generate">生成步骤</button>
+					<p class="hint" id="gen-status"></p>
+				</div>
+			</section>
+
+			<section class="panel hidden" id="steps-panel">
+				<div class="panel-head">
+					<h2>预览步骤</h2>
+					<span class="badge" id="mode-badge"></span>
+				</div>
+				<p class="panel-note">可改标题、字幕或步骤 JSON。确认后再出片。</p>
+				<label class="field">
+					<span>标题</span>
+					<input id="title" type="text" />
+				</label>
+				<label class="field">
+					<span>副标题</span>
+					<input id="subtitle" type="text" />
+				</label>
+				<label class="field">
+					<span>品牌色</span>
+					<input id="brandColor" type="text" placeholder="#ff6b3d" />
+				</label>
+				<label class="field">
+					<span>步骤（JSON）</span>
+					<textarea id="steps-json" rows="14" spellcheck="false"></textarea>
+				</label>
+				<div class="actions">
+					<button type="button" class="primary" id="btn-produce">生成视频</button>
+					<button type="button" class="ghost" id="btn-back">返回修改网址</button>
+				</div>
+				<p class="hint" id="produce-status"></p>
+			</section>
+
+			<section class="panel hidden" id="result-panel">
+				<div class="panel-head">
+					<h2>成片</h2>
+				</div>
+				<video id="preview" controls playsinline></video>
+				<div class="actions">
+					<a class="primary link-btn" id="btn-download" href="#">下载 MP4</a>
+					<button type="button" class="ghost" id="btn-restart">再做一个</button>
+				</div>
+			</section>
+		</main>
+		<script type="module" src="/app.js"></script>
+	</body>
+</html>

@@ -1,6 +1,8 @@
+.DS_Store
 node_modules/
 output/
 dist/
+.env
 *.webm
 *.mp4
 .pw-video/

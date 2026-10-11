@@ -131,6 +131,8 @@ async function main() {
 		url: targetUrl,
 		title: script?.title ?? new URL(targetUrl).hostname,
 		subtitle: script?.subtitle ?? "",
+		brandColor: script?.brandColor ?? "#ff6b3d",
+		captions: script?.captions ?? [],
 		viewport,
 		video: "demo.webm",
 		script: scriptPath ?? null,

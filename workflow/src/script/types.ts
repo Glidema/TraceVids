@@ -11,6 +11,11 @@ export type DemoStep =
 	| { action: "upload"; selector?: string; path: string }
 	| { action: "assert"; selector: string; textContains?: string };
 
+export interface DemoCaption {
+	atStep: number;
+	text: string;
+}
+
 export interface DemoScript {
 	name?: string;
 	url: string;
@@ -19,6 +24,10 @@ export interface DemoScript {
 	/** Shown as Remotion title card. */
 	title?: string;
 	subtitle?: string;
+	/** Accent color for click rings / caption plate (hex). */
+	brandColor?: string;
+	/** Subtitle lines mapped to step indexes for polish. */
+	captions?: DemoCaption[];
 	steps: DemoStep[];
 }
 

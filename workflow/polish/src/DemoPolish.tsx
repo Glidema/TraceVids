@@ -19,11 +19,20 @@ export type PolishEvent = {
 	y?: number;
 };
 
+export type PolishCaption = {
+	/** Absolute ms on the source timeline (resolved from atStep + events). */
+	tMs: number;
+	text: string;
+	durationMs?: number;
+};
+
 export type DemoPolishProps = {
 	videoFile: string;
 	title: string;
 	subtitle: string;
+	brandColor: string;
 	events: PolishEvent[];
+	captions: PolishCaption[];
 	/** Source video duration in frames at composition fps. */
 	sourceFrames: number;
 };
@@ -31,15 +40,27 @@ export type DemoPolishProps = {
 export const TITLE_FRAMES = 45;
 export const OUTRO_FRAMES = 20;
 
+function withAlpha(hex: string, alpha: number) {
+	const raw = hex.replace("#", "");
+	if (raw.length !== 6) return `rgba(255,107,61,${alpha})`;
+	const r = Number.parseInt(raw.slice(0, 2), 16);
+	const g = Number.parseInt(raw.slice(2, 4), 16);
+	const b = Number.parseInt(raw.slice(4, 6), 16);
+	return `rgba(${r},${g},${b},${alpha})`;
+}
+
 export const DemoPolish: React.FC<DemoPolishProps> = ({
 	videoFile,
 	title,
 	subtitle,
+	brandColor,
 	events,
+	captions,
 	sourceFrames,
 }) => {
 	const frame = useCurrentFrame();
 	const { fps, width, height } = useVideoConfig();
+	const accent = brandColor || "#ff6b3d";
 
 	const zoom = interpolate(
 		frame,
@@ -66,6 +87,17 @@ export const DemoPolish: React.FC<DemoPolishProps> = ({
 		(e) => (e.action === "click" || e.action === "hover") && e.x != null && e.y != null,
 	);
 
+	const activeCaption = (() => {
+		const tMs = ((frame - TITLE_FRAMES) / fps) * 1000;
+		if (tMs < 0) return null;
+		let current: PolishCaption | null = null;
+		for (const c of captions) {
+			const dur = c.durationMs ?? 2200;
+			if (tMs >= c.tMs && tMs <= c.tMs + dur) current = c;
+		}
+		return current;
+	})();
+
 	return (
 		<AbsoluteFill style={{ backgroundColor: "#0b1020" }}>
 			<AbsoluteFill
@@ -77,6 +109,15 @@ export const DemoPolish: React.FC<DemoPolishProps> = ({
 					transform: `translateY(${titleY}px)`,
 				}}
 			>
+				<div
+					style={{
+						width: 72,
+						height: 6,
+						borderRadius: 999,
+						backgroundColor: accent,
+						marginBottom: 28,
+					}}
+				/>
 				<div
 					style={{
 						fontFamily: "Georgia, 'Songti SC', serif",
@@ -141,8 +182,8 @@ export const DemoPolish: React.FC<DemoPolishProps> = ({
 									width: 44,
 									height: 44,
 									borderRadius: 999,
-									border: "3px solid #ff6b3d",
-									boxShadow: "0 0 0 6px rgba(255,107,61,0.25)",
+									border: `3px solid ${accent}`,
+									boxShadow: `0 0 0 6px ${withAlpha(accent, 0.25)}`,
 									transform: `scale(${pulse * ring})`,
 									opacity,
 									pointerEvents: "none",
@@ -150,6 +191,37 @@ export const DemoPolish: React.FC<DemoPolishProps> = ({
 							/>
 						);
 					})}
+
+					{activeCaption ? (
+						<div
+							style={{
+								position: "absolute",
+								left: 0,
+								right: 0,
+								bottom: 48,
+								display: "flex",
+								justifyContent: "center",
+								pointerEvents: "none",
+							}}
+						>
+							<div
+								style={{
+									maxWidth: 900,
+									padding: "12px 22px",
+									borderRadius: 12,
+									backgroundColor: "rgba(11,16,32,0.72)",
+									borderBottom: `3px solid ${accent}`,
+									color: "#f4f1ea",
+									fontFamily: "Helvetica Neue, 'PingFang SC', sans-serif",
+									fontSize: 28,
+									lineHeight: 1.35,
+									textAlign: "center",
+								}}
+							>
+								{activeCaption.text}
+							</div>
+						</div>
+					) : null}
 				</AbsoluteFill>
 			</Sequence>
 

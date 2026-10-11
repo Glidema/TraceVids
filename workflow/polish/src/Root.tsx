@@ -10,7 +10,9 @@ const defaultProps: DemoPolishProps = {
 	videoFile: "input.webm",
 	title: "Product demo",
 	subtitle: "",
+	brandColor: "#ff6b3d",
 	events: [],
+	captions: [],
 	sourceFrames: 90,
 };
 

@@ -3,9 +3,21 @@ url: https://transcribe.com/zh/formats-to-mp3
 title: 免費將檔案轉為 MP3
 subtitle: Transcribe 線上轉檔
 locale: zh-TW
+brandColor: "#2f6fed"
 viewport:
   width: 1280
   height: 720
+captions:
+  - atStep: 0
+    text: 免費線上轉檔，支援影音格式
+  - atStep: 6
+    text: 上傳聲音或影片檔案
+  - atStep: 8
+    text: 可選：裁切音訊區間
+  - atStep: 12
+    text: 一鍵轉成 MP3
+  - atStep: 16
+    text: 常見格式問題一次看懂
 steps:
   - action: goto
     waitUntil: networkidle

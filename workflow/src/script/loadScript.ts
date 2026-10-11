@@ -43,12 +43,26 @@ export function parseDemoScript(raw: unknown, baseDir: string): DemoScript {
 		return step;
 	});
 
+	const captions = Array.isArray(doc.captions)
+		? doc.captions
+				.filter(
+					(c): c is { atStep: number; text: string } =>
+						Boolean(c) &&
+						typeof c === "object" &&
+						typeof (c as { atStep?: unknown }).atStep === "number" &&
+						typeof (c as { text?: unknown }).text === "string",
+				)
+				.map((c) => ({ atStep: c.atStep, text: c.text }))
+		: undefined;
+
 	return {
 		name: typeof doc.name === "string" ? doc.name : undefined,
 		url: doc.url,
 		title: typeof doc.title === "string" ? doc.title : undefined,
 		subtitle: typeof doc.subtitle === "string" ? doc.subtitle : undefined,
 		locale: typeof doc.locale === "string" ? doc.locale : undefined,
+		brandColor: typeof doc.brandColor === "string" ? doc.brandColor : undefined,
+		captions,
 		viewport:
 			doc.viewport && typeof doc.viewport === "object"
 				? {
